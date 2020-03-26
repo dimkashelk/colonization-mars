@@ -1,5 +1,6 @@
 from flask import Flask
 from flask import url_for, request
+import os
 
 app = Flask(__name__)
 
@@ -271,6 +272,42 @@ def results(nickname, level, rating):
                             </div>
                           </body>
                         </html>'''
+
+
+@app.route('/load_photo', methods=['POST', 'GET'])
+def sample_file_upload():
+    if request.method == 'GET':
+        return f'''<!doctype html>
+                        <html lang="en">
+                          <head>
+                            <meta charset="utf-8">
+                            <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+                             <link rel="stylesheet"
+                             href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+                             integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+                             crossorigin="anonymous">
+                            <link rel="stylesheet" type="text/css" href="{url_for('static',
+                                                                                  filename='css/style.css')}" />
+                            <title>Отбор астронавтов</title>
+                          </head>
+                          <body>
+                            <h2 align="center">Загрузка фотографии</h2>
+                            <p align="center">для участия в миссии</p>
+                            <form align="center" method="post" enctype="multipart/form-data">
+                               <div class="form-group">
+                                    <label for="photo">Выберите файл</label>
+                                    <input type="file" class="form-control-file" id="photo" name="file">
+                                </div>
+                                <button type="submit" class="btn btn-primary">Отправить</button>
+                            </form>
+                            <img src={url_for('static', filename='img/photo.png')}>
+                          </body>
+                        </html>'''
+    elif request.method == 'POST':
+        f = request.files['file']
+        with open('static/img/photo.png', 'wb') as file:
+            file.write(f.read())
+        return "Форма отправлена"
 
 
 if __name__ == '__main__':
